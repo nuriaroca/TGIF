@@ -17,7 +17,11 @@ statistics.numberOfIndependents = numberOfMembers(members, "I");
 // Average
 statistics.democratsVotesAverage = (getAverage(members, "D") / statistics.numberOfDemocrats).toFixed(2);
 statistics.republicansVotesAverage = (getAverage(members, "R") / statistics.numberOfRepublicans).toFixed(2);
-statistics.independentsVotesAverage = (getAverage(members, "I") / statistics.numberOfIndependents).toFixed(2);
+if (statistics.numberOfIndependents == 0) {
+    statistics.independentsVotesAverage = 0;
+} else {
+    statistics.independentsVotesAverage = (getAverage(members, "I") / statistics.numberOfIndependents).toFixed(2);
+}
 
 // Total Parties (Members and Average)
 statistics.totalNumberAllParties = getTotal()
@@ -59,6 +63,7 @@ getTotal();
 function getTotal() {
     totalNumberAllParties = (Number(statistics.numberOfDemocrats) + Number(statistics.numberOfRepublicans) + Number(statistics.numberOfIndependents));
     totalAverageAllParties = ((Number(statistics.democratsVotesAverage) + Number(statistics.republicansVotesAverage) + Number(statistics.independentsVotesAverage)) / 3).toFixed(2);
+
 }
 console.log(totalNumberAllParties);
 console.log(totalAverageAllParties);
@@ -116,10 +121,43 @@ function createDataGlanceTable(statsObject) {
 
     trTotal.append(tdTotal, tdTotalVotes, tdTotalAvg);
     tbody.append(trTotal);
-
 }
+
+
 // Least Engaged
 
 
+
+
+
+engaged(members, "missed_votes_pct");
+
+function engaged(arrayOfMembers, criteria) {
+
+    var sortedArray = arrayOfMembers.sort(function (a, b) {
+        return a[criteria] - b[criteria]
+    });
+    newArray = [];
+
+    for (i = 0; i < sortedArray.length; i++) {
+
+        if (i < sortedArray.length * 0.1) {
+            newArray.push(sortedArray[i]);
+
+        } else if (sortedArray[i] == sortedArray[i - 1]) {
+            newArray.push(sortedArray[i]);
+
+        } else {
+            break;
+        }
+    }
+    console.log(newArray);
+
+}
+
+
+
+function createTableEngage(array, idElement);
+    var tbody = 
 
 // Most Engaged
