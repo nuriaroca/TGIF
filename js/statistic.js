@@ -26,7 +26,6 @@ if (statistics.numberOfIndependents == 0) {
 // Total Parties (Members and Average)
 statistics.totalNumberAllParties = getTotal()
 
-console.log(statistics);
 
 function numberOfMembers(members, letter) {
 
@@ -124,19 +123,23 @@ function createDataGlanceTable(statsObject) {
 }
 
 
-// Least Engaged
 
+engaged(members, "missed_votes_pct", "desc", "tableBodyTop");
+engaged(members, "missed_votes_pct", "asc", "tableBodyBottom");
 
+function engaged(arrayOfMembers, criteria, order, tableBody) {
+    var sortedArray = []
+    if (order == "desc") {
+        sortedArray = arrayOfMembers.sort(function (a, b) {
+            return b[criteria] - a[criteria]
+        });
+    } else {
 
+        sortedArray = arrayOfMembers.sort(function (a, b) {
+            return a[criteria] - b[criteria]
+        });
+    }
 
-
-engaged(members, "missed_votes_pct");
-
-function engaged(arrayOfMembers, criteria) {
-
-    var sortedArray = arrayOfMembers.sort(function (a, b) {
-        return a[criteria] - b[criteria]
-    });
     newArray = [];
 
     for (i = 0; i < sortedArray.length; i++) {
@@ -144,7 +147,7 @@ function engaged(arrayOfMembers, criteria) {
         if (i < sortedArray.length * 0.1) {
             newArray.push(sortedArray[i]);
 
-        } else if (sortedArray[i] == sortedArray[i - 1]) {
+        } else if (sortedArray[i][criteria] == newArray[newArray.length - 1][criteria]) {
             newArray.push(sortedArray[i]);
 
         } else {
@@ -152,12 +155,67 @@ function engaged(arrayOfMembers, criteria) {
         }
     }
     console.log(newArray);
+    createTableEngage(newArray, tableBody);
+}
 
+function createTableEngage(members, tableBody) {
+
+    var tbody = document.getElementById(tableBody)
+
+    for (i = 0; i < members.length; i++) {
+
+        var tr = document.createElement("tr");
+        var tdName = document.createElement("td");
+        var tdMissedNumber = document.createElement("td");
+        var tdMissedPct = document.createElement("td");
+
+        var lastName = members[i].last_name;
+        var firstName = members[i].first_name;
+        var middleName = members[i].middle_name;
+        if (middleName == null) {
+            middleName = "";
+        }
+        var completedName = `${lastName}, ${firstName} ${middleName}`;
+        var missedNumber = members[i].missed_votes;
+        var missedPct = members[i].missed_votes_pct;
+
+        if (members[i].url != "") {
+
+            var membersUrl = document.createElement("a");
+            membersUrl.setAttribute("href", members[i].url);
+            membersUrl.setAttribute("target", "_blank");
+
+            membersUrl.textContent = completedName;
+
+            tdName.append(membersUrl);
+        } else {
+            tdName.append(completedName);
+        }
+
+        tdMissedNumber.textContent = missedNumber;
+        tdMissedPct.textContent = `${missedPct}%`;
+
+        tr.append(tdName, tdMissedNumber, tdMissedPct)
+        tbody.append(tr)
+    }
 }
 
 
+// Filters
 
-function createTableEngage(array, idElement);
-    var tbody = 
+// function partyOfMembers(members, letter) {
+//     var arrayOfDemocrats = []
+//     var arrayOfIndependents = []
+//     var ArrayOfIndependents = []
 
-// Most Engaged
+//     for (i = 0; i < members.length; i++) {
+//         if (members[i].party == letter "D") {
+//             arrayOfDemocrats++;
+//         } else if {
+
+//         }
+
+
+//     }
+
+// }

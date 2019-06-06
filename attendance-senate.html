@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css"
         integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
-        <title class="title">Attendance senate</title>
+    <title class="title">Attendance senate</title>
 </head>
 
 
@@ -108,7 +108,7 @@
         <div class="div-bottom">
             <div class="text">
                 <h2>Least Engaged (Bottom 10% Attendance)</h2>
-                <table class="table engaged table-striped">
+                <table class="table table-fixed glance table-striped">
                     <thead class="thead-dark table-align">
                         <tr>
                             <th>Name</th>
@@ -116,13 +116,13 @@
                             <th>% Missed</th>
                         </tr>
                     </thead>
-                    <tbody class="engaged-body">
+                    <tbody id="tableBodyTop">
                     </tbody>
                 </table>
             </div>
             <div class="text">
                 <h2>Most Engaged (Top 10% Attendance)</h2>
-                <table class="table engaged table-striped">
+                <table class="table glance table-striped">
                     <thead class="thead-dark table-align">
                         <tr>
                             <th>Name</th>
@@ -130,7 +130,7 @@
                             <th>% Missed</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="tableBodyBottom">
                     </tbody>
                 </table>
             </div>
