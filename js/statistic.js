@@ -23,9 +23,9 @@ if (statistics.numberOfIndependents == 0) {
     statistics.independentsVotesAverage = (getAverage(members, "I") / statistics.numberOfIndependents).toFixed(2);
 }
 
+
 // Total Parties (Members and Average)
 statistics.totalNumberAllParties = getTotal()
-
 
 function numberOfMembers(members, letter) {
 
@@ -124,10 +124,15 @@ function createDataGlanceTable(statsObject) {
 
 
 
-engaged(members, "missed_votes_pct", "desc", "tableBodyTop");
-engaged(members, "missed_votes_pct", "asc", "tableBodyBottom");
+if (document.URL.includes("attendance")) {
+    engaged(members, "missed_votes_pct", "desc", "tableBodyTop", "missed_votes");
+    engaged(members, "missed_votes_pct", "asc", "tableBodyBottom", "missed_votes");
+} else {
+    engaged(members, "votes_with_party_pct", "desc", "tableBodyTop", "total_votes");
+    engaged(members, "votes_with_party_pct", "asc", "tableBodyBottom", "total_votes");
+}
 
-function engaged(arrayOfMembers, criteria, order, tableBody) {
+function engaged(arrayOfMembers, criteria, order, tableBody, criteriaDos) {
     var sortedArray = []
     if (order == "desc") {
         sortedArray = arrayOfMembers.sort(function (a, b) {
@@ -141,13 +146,15 @@ function engaged(arrayOfMembers, criteria, order, tableBody) {
     }
 
     newArray = [];
+    console.log(sortedArray.length * 0.1, Math.round(sortedArray.length * 0.1))
 
     for (i = 0; i < sortedArray.length; i++) {
-
-        if (i < sortedArray.length * 0.1) {
+        console.log(sortedArray[11][criteria])
+        if (i < Math.round(sortedArray.length * 0.1)) {
             newArray.push(sortedArray[i]);
-
+            console.log(sortedArray[i][criteria], newArray[newArray.length - 1][criteria])
         } else if (sortedArray[i][criteria] == newArray[newArray.length - 1][criteria]) {
+            console.log("if")
             newArray.push(sortedArray[i]);
 
         } else {
@@ -155,10 +162,10 @@ function engaged(arrayOfMembers, criteria, order, tableBody) {
         }
     }
     console.log(newArray);
-    createTableEngage(newArray, tableBody);
+    createTableEngage(newArray, tableBody, criteria, criteriaDos);
 }
 
-function createTableEngage(members, tableBody) {
+function createTableEngage(members, tableBody, criteria, criteriaDos) {
 
     var tbody = document.getElementById(tableBody)
 
@@ -176,8 +183,8 @@ function createTableEngage(members, tableBody) {
             middleName = "";
         }
         var completedName = `${lastName}, ${firstName} ${middleName}`;
-        var missedNumber = members[i].missed_votes;
-        var missedPct = members[i].missed_votes_pct;
+        var missedNumber = members[i][criteriaDos];
+        var missedPct = members[i][criteria];
 
         if (members[i].url != "") {
 
@@ -200,22 +207,3 @@ function createTableEngage(members, tableBody) {
     }
 }
 
-
-// Filters
-
-// function partyOfMembers(members, letter) {
-//     var arrayOfDemocrats = []
-//     var arrayOfIndependents = []
-//     var ArrayOfIndependents = []
-
-//     for (i = 0; i < members.length; i++) {
-//         if (members[i].party == letter "D") {
-//             arrayOfDemocrats++;
-//         } else if {
-
-//         }
-
-
-//     }
-
-// }

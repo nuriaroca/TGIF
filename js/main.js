@@ -20,6 +20,7 @@ getMembersName(members);
 
 function getMembersName(arrayOfMembers) {
     var tbody = document.getElementById("table-body");
+    tbody.innerHTML = "";
 
     for (var i = 0; i < arrayOfMembers.length; i++) {
         var tr = document.createElement("tr");
@@ -28,7 +29,6 @@ function getMembersName(arrayOfMembers) {
         var tdState = document.createElement("td");
         var tdYears = document.createElement("td");
         var tdVotes = document.createElement("td");
-
 
         var lastName = arrayOfMembers[i].last_name;
         var firstName = arrayOfMembers[i].first_name;
@@ -66,8 +66,54 @@ function getMembersName(arrayOfMembers) {
     }
 }
 
-// READ MORE
 
+// Filters
+
+var checkboxR = document.getElementById("republican")
+var checkboxD = document.getElementById("democrat")
+var checkboxI = document.getElementById("independent")
+
+checkboxR.addEventListener('click', function () {
+    filter("R")
+});
+checkboxD.addEventListener('click', function () {
+    filter("D")
+});
+checkboxI.addEventListener('click', function () {
+    filter("I")
+});
+
+function filter(party) {
+    var filteredArray = []
+    for (i = 0; i < members.length; i++) {
+        if (members[i].party == party) {
+            filteredArray.push(members[i]);
+
+        }
+
+
+
+
+        // for (i = 0; i < members.length; i++) {
+        //     if (members[i].party == party) {
+        //         filteredArray.push(members[i]);
+        //     } else if (checkboxR.click == true) {
+        //         members[i].style.display = "block";
+        //     } else {
+        //         members[i].style.display = "none";
+        //     }
+        // }
+
+    }
+
+
+
+
+
+    getMembersName(filteredArray);
+}
+
+// READ MORE
 function myFunction() {
     var dots = document.getElementById("dots");
     var moreText = document.getElementById("more");
