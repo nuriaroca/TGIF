@@ -72,46 +72,90 @@ function getMembersName(arrayOfMembers) {
 var checkboxR = document.getElementById("republican")
 var checkboxD = document.getElementById("democrat")
 var checkboxI = document.getElementById("independent")
+var dropdown = document.getElementById("state")
 
 checkboxR.addEventListener('click', function () {
-    filter("R")
+    filter()
 });
 checkboxD.addEventListener('click', function () {
-    filter("D")
+    filter()
 });
 checkboxI.addEventListener('click', function () {
-    filter("I")
+    filter()
 });
 
-function filter(party) {
-    var filteredArray = []
-    for (i = 0; i < members.length; i++) {
-        if (members[i].party == party) {
-            filteredArray.push(members[i]);
+dropdown.addEventListener('change', function () {
+    filterState(members)
+});
 
+function filter() {
+    var filteredArray = [];
+    var checkbox = Array.from(document.querySelectorAll('input[type=checkbox]:checked')).map(function (cb) {
+        return cb.value;
+    })
+
+    if (checkbox.length == 0) { //????? Independents hse
+        getMembersName(members);
+    } else {
+        for (i = 0; i < members.length; i++) {
+            // if array cd [R,I,D] includes the value party of the members, pushhh
+            if (checkbox.includes(members[i].party)) {
+                filteredArray.push(members[i]);
+            }
         }
-
-
-
-
-        // for (i = 0; i < members.length; i++) {
-        //     if (members[i].party == party) {
-        //         filteredArray.push(members[i]);
-        //     } else if (checkboxR.click == true) {
-        //         members[i].style.display = "block";
-        //     } else {
-        //         members[i].style.display = "none";
-        //     }
-        // }
-
+        getMembersName(filteredArray);
     }
-
-
-
-
-
-    getMembersName(filteredArray);
 }
+
+getStateName(members);
+
+function getStateName(members) {
+
+    var allStates = members.map(member => member.state);
+    var uniqueStates = [];
+    var dropdown = document.getElementById("state");
+
+    for (i = 0; i < allStates.length; i++) {
+        if (!uniqueStates.includes(allStates[i])) {
+            uniqueStates.push(allStates[i]);
+        }
+    }
+    uniqueStates.sort()
+    console.log(uniqueStates)
+
+    // NO SURT "ALL"
+
+    // uniqueStates.forEach(function (element, key) {
+    //     state[key] = new Option(element, key);
+    // });
+
+    for (j = 0; j < uniqueStates.length; j++) {
+
+        var option = document.createElement("option");
+        option.innerHTML = uniqueStates[j];
+        dropdown.append(option);
+    }
+}
+
+
+function filterState(members) {
+    var statesArray = [];
+    var dropdown = document.getElementById("state").value;
+
+    if (dropdown == "ALL") {
+        getMembersName(members);
+    } else {
+        for (i = 0; i < members.length; i++) {
+            if (dropdown.includes(members[i].state)) {
+                statesArray.push(members[i]);
+            }
+        }
+    }
+    getMembersName(statesArray);
+
+}
+
+
 
 // READ MORE
 function myFunction() {

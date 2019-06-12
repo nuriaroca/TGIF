@@ -139,6 +139,11 @@ h2 {
 
 }
 
+label {
+    margin-right: 10px;
+}
+
+
 .party {
     width: 40%;
     display: flex;
@@ -147,6 +152,7 @@ h2 {
 
 .party>div {
     display: flex;
+    justify-content: space-between;
 }
 
 
