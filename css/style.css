@@ -132,6 +132,12 @@ h2 {
     display: none;
 }
 
+.error {
+    text-align: center;
+    margin-bottom: 30px;
+
+}
+
 
 .check {
     display: flex;

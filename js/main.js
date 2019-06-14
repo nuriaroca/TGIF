@@ -20,50 +20,61 @@ getMembersName(members);
 
 function getMembersName(arrayOfMembers) {
     var tbody = document.getElementById("table-body");
+    var error = document.getElementById("error");
     tbody.innerHTML = "";
+    
+    if (arrayOfMembers.length == 0) {
 
-    for (var i = 0; i < arrayOfMembers.length; i++) {
-        var tr = document.createElement("tr");
-        var tdName = document.createElement("td");
-        var tdParty = document.createElement("td");
-        var tdState = document.createElement("td");
-        var tdYears = document.createElement("td");
-        var tdVotes = document.createElement("td");
+        error.style = "display:block"
 
-        var lastName = arrayOfMembers[i].last_name;
-        var firstName = arrayOfMembers[i].first_name;
-        var middleName = arrayOfMembers[i].middle_name;
-        if (middleName == null) {
-            middleName = "";
+    } else {
+
+        error.style = "display:none"
+
+        for (var i = 0; i < arrayOfMembers.length; i++) {
+            var tr = document.createElement("tr");
+            var tdName = document.createElement("td");
+            var tdParty = document.createElement("td");
+            var tdState = document.createElement("td");
+            var tdYears = document.createElement("td");
+            var tdVotes = document.createElement("td");
+
+            var lastName = arrayOfMembers[i].last_name;
+            var firstName = arrayOfMembers[i].first_name;
+            var middleName = arrayOfMembers[i].middle_name;
+            if (middleName == null) {
+                middleName = "";
+            }
+            // tdName.textContent = lastName + ", " + firstName + " " +middleName;
+            var completedName = `${lastName}, ${firstName} ${middleName}`;
+            var party = arrayOfMembers[i].party;
+            var state = arrayOfMembers[i].state;
+            var years = arrayOfMembers[i].seniority;
+            var votes = arrayOfMembers[i].votes_with_party_pct;
+
+            if (members[i].url != "") {
+
+                var membersUrl = document.createElement("a");
+                membersUrl.setAttribute("href", members[i].url);
+                membersUrl.setAttribute("target", "_blank");
+
+                membersUrl.textContent = completedName;
+
+                tdName.append(membersUrl);
+            } else {
+                tdName.append(completedName);
+            }
+
+            tdParty.textContent = party;
+            tdState.textContent = state;
+            tdYears.textContent = years;
+            tdVotes.textContent = `${votes}%`;
+
+            tr.append(tdName, tdParty, tdState, tdYears, tdVotes)
+            tbody.append(tr)
         }
-        // tdName.textContent = lastName + ", " + firstName + " " +middleName;
-        var completedName = `${lastName}, ${firstName} ${middleName}`;
-        var party = arrayOfMembers[i].party;
-        var state = arrayOfMembers[i].state;
-        var years = arrayOfMembers[i].seniority;
-        var votes = arrayOfMembers[i].votes_with_party_pct;
-
-        if (members[i].url != "") {
-
-            var membersUrl = document.createElement("a");
-            membersUrl.setAttribute("href", members[i].url);
-            membersUrl.setAttribute("target", "_blank");
-
-            membersUrl.textContent = completedName;
-
-            tdName.append(membersUrl);
-        } else {
-            tdName.append(completedName);
-        }
-
-        tdParty.textContent = party;
-        tdState.textContent = state;
-        tdYears.textContent = years;
-        tdVotes.textContent = `${votes}%`;
-
-        tr.append(tdName, tdParty, tdState, tdYears, tdVotes)
-        tbody.append(tr)
     }
+
 }
 
 
@@ -85,8 +96,9 @@ checkboxI.addEventListener('click', function () {
 });
 
 dropdown.addEventListener('change', function () {
-    filterState(members)
+    filter()
 });
+
 
 function filter() {
     var filteredArray = [];
@@ -94,16 +106,17 @@ function filter() {
         return cb.value;
     })
 
-    if (checkbox.length == 0) { //????? Independents hse
-        getMembersName(members);
+    if (checkbox.length == 0) { // INDEPENDTENTS HOUSE??
+        filterState(members);
     } else {
         for (i = 0; i < members.length; i++) {
             // if array cd [R,I,D] includes the value party of the members, pushhh
             if (checkbox.includes(members[i].party)) {
                 filteredArray.push(members[i]);
             }
+
         }
-        getMembersName(filteredArray);
+        filterState(filteredArray);
     }
 }
 
@@ -121,38 +134,30 @@ function getStateName(members) {
         }
     }
     uniqueStates.sort()
-    console.log(uniqueStates)
-
-    // NO SURT "ALL"
-
-    // uniqueStates.forEach(function (element, key) {
-    //     state[key] = new Option(element, key);
-    // });
 
     for (j = 0; j < uniqueStates.length; j++) {
 
         var option = document.createElement("option");
+        option.setAttribute("value", uniqueStates[j]);
         option.innerHTML = uniqueStates[j];
         dropdown.append(option);
     }
 }
 
-
 function filterState(members) {
     var statesArray = [];
-    var dropdown = document.getElementById("state").value;
+    var dropdownValue = document.getElementById("state").value;
 
-    if (dropdown == "ALL") {
+    if (dropdownValue == "all") {
         getMembersName(members);
     } else {
         for (i = 0; i < members.length; i++) {
-            if (dropdown.includes(members[i].state)) {
+            if (dropdownValue == members[i].state) {
                 statesArray.push(members[i]);
             }
         }
+        getMembersName(statesArray);
     }
-    getMembersName(statesArray);
-
 }
 
 
