@@ -11,18 +11,62 @@
 
 // window.addEventListener('scroll', resizeHeaderOnScroll);
 
+var members;
+
+
+renderRemoteData();
+
+function renderRemoteData() {
+
+    var loader = document.getElementById("loader");
+    var tableHidding = document.getElementById("loaderHidding");
+    tableHidding.style.display = "none";
+
+    var linkUrl;
+    var senateUrl = "https://api.propublica.org/congress/v1/113/senate/members.json";
+    var houseUrl = "https://api.propublica.org/congress/v1/113/house/members.json";
+
+    if (document.URL.includes("senate")) {
+        linkUrl = senateUrl;
+    } else {
+        linkUrl = houseUrl;
+    }
+
+    fetch(linkUrl, {
+        method: "GET",
+        headers: {
+            'X-API-Key': '8MIEErroOmIsLiXRaTw24msRaY08vz1msuabKtbT'
+        }
+    }).then(function (response) {
+        if (response.ok) {
+            return response.json();
+        }
+        throw new Error(response.statusText);
+    }).then(function (json) {
+        // do something with json data
+        members = json;
+        members = members.results[0].members;
+
+        getMembersName(members);
+        filter();
+        getStateName(members);
+        filterState(members);
+
+        loader.style.display = "none";
+        tableHidding.style.display = "block";
+
+    }).catch(function (error) {
+        console.log("Request failed: " + error.message);
+    });
+}
 
 //TABLE SENATE-DATA
-
-var members = data.results[0].members;
-
-getMembersName(members);
 
 function getMembersName(arrayOfMembers) {
     var tbody = document.getElementById("table-body");
     var error = document.getElementById("error");
     tbody.innerHTML = "";
-    
+
     if (arrayOfMembers.length == 0) {
 
         error.style = "display:block"
@@ -77,7 +121,6 @@ function getMembersName(arrayOfMembers) {
 
 }
 
-
 // Filters
 
 var checkboxR = document.getElementById("republican")
@@ -99,7 +142,6 @@ dropdown.addEventListener('change', function () {
     filter()
 });
 
-
 function filter() {
     var filteredArray = [];
     var checkbox = Array.from(document.querySelectorAll('input[type=checkbox]:checked')).map(function (cb) {
@@ -108,19 +150,17 @@ function filter() {
 
     if (checkbox.length == 0) { // INDEPENDTENTS HOUSE??
         filterState(members);
+
     } else {
         for (i = 0; i < members.length; i++) {
             // if array cd [R,I,D] includes the value party of the members, pushhh
             if (checkbox.includes(members[i].party)) {
                 filteredArray.push(members[i]);
             }
-
         }
         filterState(filteredArray);
     }
 }
-
-getStateName(members);
 
 function getStateName(members) {
 
@@ -159,8 +199,6 @@ function filterState(members) {
         getMembersName(statesArray);
     }
 }
-
-
 
 // READ MORE
 function myFunction() {

@@ -1,31 +1,76 @@
-// GLANCE
+var members;
+var loader = document.getElementById("loader");
+var table = document.getElementById("senate-data");
+table.style = "display:none";
+renderRemoteData();
 
-var statistics = {
-    numberOfDemocrats: 0,
-    numberOfRepublicans: 0,
-    numberOfIndependents: 0,
-    democratsVotesAverage: 0
-};
+function renderRemoteData() {
 
-var members = data.results[0].members;
+    var linkUrl;
+    var senateUrl = "https://api.propublica.org/congress/v1/113/senate/members.json";
+    var houseUrl = "https://api.propublica.org/congress/v1/113/house/members.json";
 
-// Number of members
-statistics.numberOfDemocrats = numberOfMembers(members, "D");
-statistics.numberOfRepublicans = numberOfMembers(members, "R");
-statistics.numberOfIndependents = numberOfMembers(members, "I");
+    if (document.URL.includes("senate")) {
+        linkUrl = senateUrl;
+    } else {
+        linkUrl = houseUrl;
+    }
 
-// Average
-statistics.democratsVotesAverage = (getAverage(members, "D") / statistics.numberOfDemocrats).toFixed(2);
-statistics.republicansVotesAverage = (getAverage(members, "R") / statistics.numberOfRepublicans).toFixed(2);
-if (statistics.numberOfIndependents == 0) {
-    statistics.independentsVotesAverage = 0;
-} else {
-    statistics.independentsVotesAverage = (getAverage(members, "I") / statistics.numberOfIndependents).toFixed(2);
+    fetch(linkUrl, {
+        method: "GET",
+        headers: {
+            'X-API-Key': '8MIEErroOmIsLiXRaTw24msRaY08vz1msuabKtbT'
+        }
+    }).then(function (response) {
+        if (response.ok) {
+            return response.json();
+        }
+        throw new Error(response.statusText);
+    }).then(function (json) {
+        // do something with json data
+        members = json;
+        members = members.results[0].members;
+
+        statistics();
+        createDataGlanceTable(statistics);
+        pintEngaged();
+
+        loader.style = "display:none";
+        table.style = "display:block";
+        
+    }).catch(function (error) {
+        console.log("Request failed: " + error.message);
+    });
 }
 
+// GLANCE
 
-// Total Parties (Members and Average)
-statistics.totalNumberAllParties = getTotal()
+function statistics() {
+
+    var statistics = {
+        numberOfDemocrats: 0,
+        numberOfRepublicans: 0,
+        numberOfIndependents: 0,
+        democratsVotesAverage: 0
+    };
+
+    // Number of members
+    statistics.numberOfDemocrats = numberOfMembers(members, "D");
+    statistics.numberOfRepublicans = numberOfMembers(members, "R");
+    statistics.numberOfIndependents = numberOfMembers(members, "I");
+
+    // Average
+    statistics.democratsVotesAverage = (getAverage(members, "D") / statistics.numberOfDemocrats).toFixed(2);
+    statistics.republicansVotesAverage = (getAverage(members, "R") / statistics.numberOfRepublicans).toFixed(2);
+    if (statistics.numberOfIndependents == 0) {
+        statistics.independentsVotesAverage = 0;
+    } else {
+        statistics.independentsVotesAverage = (getAverage(members, "I") / statistics.numberOfIndependents).toFixed(2);
+    }
+
+    // Total Parties (Members and Average)
+    statistics.totalNumberAllParties = getTotal()
+}
 
 function numberOfMembers(members, letter) {
 
@@ -54,10 +99,8 @@ function getAverage(members, letter) {
     return average;
 }
 
-
 var totalNumberAllParties = 0;
 var totalAverageAllParties = 0;
-getTotal();
 
 function getTotal() {
     totalNumberAllParties = (Number(statistics.numberOfDemocrats) + Number(statistics.numberOfRepublicans) + Number(statistics.numberOfIndependents));
@@ -66,9 +109,6 @@ function getTotal() {
 }
 console.log(totalNumberAllParties);
 console.log(totalAverageAllParties);
-
-
-createDataGlanceTable(statistics);
 
 function createDataGlanceTable(statsObject) {
     var tbody = document.getElementById("glance-body");
@@ -122,14 +162,14 @@ function createDataGlanceTable(statsObject) {
     tbody.append(trTotal);
 }
 
-
-
-if (document.URL.includes("attendance")) {
-    engaged(members, "missed_votes_pct", "desc", "tableBodyTop", "missed_votes");
-    engaged(members, "missed_votes_pct", "asc", "tableBodyBottom", "missed_votes");
-} else {
-    engaged(members, "votes_with_party_pct", "desc", "tableBodyTop", "total_votes");
-    engaged(members, "votes_with_party_pct", "asc", "tableBodyBottom", "total_votes");
+function pintEngaged() {
+    if (document.URL.includes("attendance")) {
+        engaged(members, "missed_votes_pct", "desc", "tableBodyTop", "missed_votes");
+        engaged(members, "missed_votes_pct", "asc", "tableBodyBottom", "missed_votes");
+    } else {
+        engaged(members, "votes_with_party_pct", "desc", "tableBodyTop", "total_votes");
+        engaged(members, "votes_with_party_pct", "asc", "tableBodyBottom", "total_votes");
+    }
 }
 
 function engaged(arrayOfMembers, criteria, order, tableBody, criteriaDos) {
@@ -139,7 +179,6 @@ function engaged(arrayOfMembers, criteria, order, tableBody, criteriaDos) {
             return b[criteria] - a[criteria]
         });
     } else {
-
         sortedArray = arrayOfMembers.sort(function (a, b) {
             return a[criteria] - b[criteria]
         });
@@ -206,4 +245,3 @@ function createTableEngage(members, tableBody, criteria, criteriaDos) {
         tbody.append(tr)
     }
 }
-
