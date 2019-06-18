@@ -13,14 +13,14 @@
 
 var members;
 
-
 renderRemoteData();
 
 function renderRemoteData() {
 
     var loader = document.getElementById("loader");
-    var tableHidding = document.getElementById("loaderHidding");
-    tableHidding.style.display = "none";
+    var allContent = document.querySelector(".all-content");
+
+    allContent.style.display = "none";
 
     var linkUrl;
     var senateUrl = "https://api.propublica.org/congress/v1/113/senate/members.json";
@@ -47,13 +47,13 @@ function renderRemoteData() {
         members = json;
         members = members.results[0].members;
 
-        getMembersName(members);
+        setEventListener();
+        // getMembersName(members);
         filter();
         getStateName(members);
-        filterState(members);
 
         loader.style.display = "none";
-        tableHidding.style.display = "block";
+        allContent.style.display = "block";
 
     }).catch(function (error) {
         console.log("Request failed: " + error.message);
@@ -122,25 +122,27 @@ function getMembersName(arrayOfMembers) {
 }
 
 // Filters
+function setEventListener() {
+    var checkboxR = document.getElementById("republican")
+    var checkboxD = document.getElementById("democrat")
+    var checkboxI = document.getElementById("independent")
+    var dropdown = document.getElementById("state")
 
-var checkboxR = document.getElementById("republican")
-var checkboxD = document.getElementById("democrat")
-var checkboxI = document.getElementById("independent")
-var dropdown = document.getElementById("state")
+    checkboxR.addEventListener('click', function () {
+        filter()
+    });
+    checkboxD.addEventListener('click', function () {
+        filter()
+    });
+    checkboxI.addEventListener('click', function () {
+        filter()
+    });
 
-checkboxR.addEventListener('click', function () {
-    filter()
-});
-checkboxD.addEventListener('click', function () {
-    filter()
-});
-checkboxI.addEventListener('click', function () {
-    filter()
-});
+    dropdown.addEventListener('change', function () {
+        filter()
+    });
 
-dropdown.addEventListener('change', function () {
-    filter()
-});
+}
 
 function filter() {
     var filteredArray = [];
@@ -202,33 +204,16 @@ function filterState(members) {
 
 // READ MORE
 function myFunction() {
-    var dots = document.getElementById("dots");
     var moreText = document.getElementById("more");
     var btnText = document.getElementById("myBtn");
 
     if (dots.style.display === "none") {
         dots.style.display = "inline";
-        btnText.innerHTML = "Read more";
+        btnText.innerHTML = "Show more";
         moreText.style.display = "none";
     } else {
         dots.style.display = "none";
-        btnText.innerHTML = "Read less";
-        moreText.style.display = "inline";
-    }
-}
-
-function myFunction2() {
-    var dots = document.getElementById("dots2");
-    var moreText = document.getElementById("more2");
-    var btnText = document.getElementById("myBtn2");
-
-    if (dots.style.display === "none") {
-        dots.style.display = "inline";
-        btnText.innerHTML = "Read more";
-        moreText.style.display = "none";
-    } else {
-        dots.style.display = "none";
-        btnText.innerHTML = "Read less";
+        btnText.innerHTML = "Show less";
         moreText.style.display = "inline";
     }
 }

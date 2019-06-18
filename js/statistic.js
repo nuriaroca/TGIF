@@ -1,10 +1,13 @@
 var members;
-var loader = document.getElementById("loader");
-var table = document.getElementById("senate-data");
-table.style = "display:none";
+
 renderRemoteData();
 
 function renderRemoteData() {
+
+    var loader = document.getElementById("loader");
+    var tableHidding = document.querySelector(".all-content");
+
+    tableHidding.style.display = "none";
 
     var linkUrl;
     var senateUrl = "https://api.propublica.org/congress/v1/113/senate/members.json";
@@ -32,18 +35,15 @@ function renderRemoteData() {
         members = members.results[0].members;
 
         statistics();
-        createDataGlanceTable(statistics);
         pintEngaged();
 
-        loader.style = "display:none";
-        table.style = "display:block";
-        
+        loader.style.display = "none";
+        tableHidding.style.display = "";
+
     }).catch(function (error) {
         console.log("Request failed: " + error.message);
     });
 }
-
-// GLANCE
 
 function statistics() {
 
@@ -69,7 +69,11 @@ function statistics() {
     }
 
     // Total Parties (Members and Average)
-    statistics.totalNumberAllParties = getTotal()
+    statistics.totalNumberAllParties = (Number(statistics.numberOfDemocrats) + Number(statistics.numberOfRepublicans) + Number(statistics.numberOfIndependents));
+    statistics.totalAverageAllParties = ((Number(statistics.democratsVotesAverage) + Number(statistics.republicansVotesAverage) + Number(statistics.independentsVotesAverage)) / 3).toFixed(2);
+    console.log(statistics)
+    createDataGlanceTable(statistics);
+
 }
 
 function numberOfMembers(members, letter) {
@@ -98,17 +102,6 @@ function getAverage(members, letter) {
     }
     return average;
 }
-
-var totalNumberAllParties = 0;
-var totalAverageAllParties = 0;
-
-function getTotal() {
-    totalNumberAllParties = (Number(statistics.numberOfDemocrats) + Number(statistics.numberOfRepublicans) + Number(statistics.numberOfIndependents));
-    totalAverageAllParties = ((Number(statistics.democratsVotesAverage) + Number(statistics.republicansVotesAverage) + Number(statistics.independentsVotesAverage)) / 3).toFixed(2);
-
-}
-console.log(totalNumberAllParties);
-console.log(totalAverageAllParties);
 
 function createDataGlanceTable(statsObject) {
     var tbody = document.getElementById("glance-body");
@@ -146,8 +139,8 @@ function createDataGlanceTable(statsObject) {
     tdAvgI.textContent = `${statsObject.independentsVotesAverage}%`;
 
     tdTotal.textContent = "Total";
-    tdTotalVotes.textContent = totalNumberAllParties;
-    tdTotalAvg.textContent = `${totalAverageAllParties}%`;
+    tdTotalVotes.textContent = statsObject.totalNumberAllParties;
+    tdTotalAvg.textContent = `${statsObject.totalAverageAllParties}%`;
 
     trDemocrats.append(tdPartyD, tdTotalD, tdAvgD);
     tbody.append(trDemocrats);
