@@ -1,16 +1,3 @@
-// function resizeHeaderOnScroll() {
-//     const distanceY = window.pageYOffset || document.documentElement.scrollTop,
-//         shrinkOn = 100,
-//         headerEl = document.getElementById('js-header');
-//     if (distanceY > shrinkOn) {
-//         headerEl.classList.add("smaller");
-//     } else {
-//         headerEl.classList.remove("smaller");
-//     }
-// }
-
-// window.addEventListener('scroll', resizeHeaderOnScroll);
-
 var members;
 
 renderRemoteData();
@@ -48,7 +35,6 @@ function renderRemoteData() {
         members = members.results[0].members;
 
         setEventListener();
-        // getMembersName(members);
         filter();
         getStateName(members);
 

@@ -309,13 +309,45 @@ body {
 
 h2 {
     text-align: left;
+    font-size: 30px;
 }
-
 
 .container {
     margin: auto;
     width: 95%;
     padding: 0%;
+}
+
+.divhome {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 30px;
+    margin-bottom: 20px;
+}
+
+.hometext {
+    text-align: justify;
+    margin-top: 30px;
+    margin-bottom: 20px;
+    color: #212529;
+
+}
+
+.hometext>p {
+    text-indent: 40px;
+    color: #212529;
+}
+
+.hometext2 {
+    text-align: justify;
+    margin-top: 30px;
+    margin-bottom: 20px;
+    color: #212529;
+}
+
+.hometext2>p {
+    text-indent: 40px;
+    color: #212529;
 }
 
 .text {
@@ -325,6 +357,7 @@ h2 {
     margin-bottom: 20px;
     color: #212529;
 }
+
 
 .text>p {
     text-indent: 40px;
